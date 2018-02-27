@@ -9,8 +9,8 @@ WORKDIR \
 COPY \
     package.json .
 
-COPY \
-    node_modules node_modules
+RUN \
+    yarn install
 
 COPY \
     libs libs
