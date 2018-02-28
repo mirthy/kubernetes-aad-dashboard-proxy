@@ -25,10 +25,13 @@ let authenticate = function (req, res, next) {
       return next()
   }
   req.session.returnTo = req.path;
+  if (req.session.returnTo === '/') {
+    req.session.returnTo = '/loggedin';
+  }
   res.redirect('/login');
 };
 
-router.get('/', authenticate, function(req, res, next) {
+router.get('/loggedin', authenticate, function(req, res, next) {
   res.render('index', {
     name: req.user.profile.displayName,
     email: req.user.profile.upn,
@@ -76,7 +79,7 @@ router.post('/callback',
   function(req, res) {
     res.render('callback', {
       title: 'Completed Callback',
-      returnTo: req.session.returnTo || '/',
+      returnTo: req.session.returnTo || '/loggedin',
       warningMessage: env.LOGIN_WARNING_MESSAGE
     });
 });

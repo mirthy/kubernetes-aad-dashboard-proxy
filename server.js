@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
 const mustacheExpress = require('mustache-express');
-const helmet = require('helmet')
+const helmet = require('helmet');
 const OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
 
 let routes = require('./routes/index');
