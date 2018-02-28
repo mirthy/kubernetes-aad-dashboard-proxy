@@ -31,7 +31,7 @@ let authenticate = function (req, res, next) {
   res.redirect('/login');
 };
 
-router.get('/loggedin', authenticate, function(req, res, next) {
+router.get('/', authenticate, function(req, res, next) {
   res.render('index', {
     name: req.user.profile.displayName,
     email: req.user.profile.upn,
@@ -114,6 +114,7 @@ router.get('/kubeconfig', authenticate, function(req, res, next) {
 // https://github.com/nodejitsu/node-http-proxy/blob/master/examples/middleware/bodyDecoder-middleware.js
 proxy.on('proxyReq', function(proxyReq, req, res, options) {
   if (req.user && req.user.accessToken) {
+    proxyReq.path = proxyReq.path.replace(/^\/dashboard/,"")
     // Set the accessToken as a bearer token for the request to the dashboard
     let token = req.user.accessToken;
     proxyReq.setHeader('Authorization','Bearer '+ token);
