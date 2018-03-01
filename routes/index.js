@@ -25,9 +25,6 @@ let authenticate = function (req, res, next) {
       return next()
   }
   req.session.returnTo = req.path;
-  if (req.session.returnTo === '/') {
-    req.session.returnTo = '/loggedin';
-  }
   res.redirect('/login');
 };
 
@@ -79,7 +76,7 @@ router.post('/callback',
   function(req, res) {
     res.render('callback', {
       title: 'Completed Callback',
-      returnTo: req.session.returnTo || '/loggedin',
+      returnTo: req.session.returnTo || '/',
       warningMessage: env.LOGIN_WARNING_MESSAGE
     });
 });
@@ -114,7 +111,10 @@ router.get('/kubeconfig', authenticate, function(req, res, next) {
 // https://github.com/nodejitsu/node-http-proxy/blob/master/examples/middleware/bodyDecoder-middleware.js
 proxy.on('proxyReq', function(proxyReq, req, res, options) {
   if (req.user && req.user.accessToken) {
-    proxyReq.path = proxyReq.path.replace(/^\/dashboard/,"")
+    proxyReq.path = proxyReq.path.replace(/^\/dashboard/,"");
+    if (!proxyReq.path) {
+      proxyReq.path = "/";
+    }
     // Set the accessToken as a bearer token for the request to the dashboard
     let token = req.user.accessToken;
     proxyReq.setHeader('Authorization','Bearer '+ token);
