@@ -101,7 +101,8 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
-app.use(helmet())
+app.use(helmet());
+app.use(helmet.noCache());
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
