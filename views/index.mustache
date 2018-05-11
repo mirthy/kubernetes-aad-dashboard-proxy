@@ -25,13 +25,13 @@
         <div class="tab-content" id="kubectlTabContent">
             <div class="tab-pane fade show active" id="bash" role="tabpanel" aria-labelledby="bash-tab">
 <pre><code>
-cat &gt;  $cluster-ca.pem &lt;&lt; EOF
+cat &gt; kube-ca.pem &lt;&lt; EOF
 {{&clusterCaCert}}
 EOF
 
 kubectl config set-cluster {{&clusterName}} \
     --server={{&clusterUrl}} \
-    --certificate-authority=$cluster-ca.pem \
+    --certificate-authority=kube-ca.pem \
     --embed-certs=true
 kubectl config set-credentials {{email}} \
     --auth-provider=azure \
@@ -41,7 +41,8 @@ kubectl config set-credentials {{email}} \
     --auth-provider-arg=apiserver-id={{&apiserverAppId}}
 
 kubectl config set-context {{&clusterName}} --cluster={{&clusterName}} --user={{email}} 
-kubectl config use-context {{&clusterName}}            
+kubectl config use-context {{&clusterName}}
+rm kube-ca.pem          
 </code></pre>
             </div>
             <div class="tab-pane fade" id="powershell" role="tabpanel" aria-labelledby="powershell-tab">
