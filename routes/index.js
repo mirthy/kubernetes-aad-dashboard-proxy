@@ -6,7 +6,11 @@ let bouncer = require ("express-bouncer")();
 const log = require('../libs/logger');
 let httpProxy = require('http-proxy');
 let proxy = httpProxy.createProxy({secure:false});
-
+let fs = require("fs");
+let caCert = "";
+try {
+  caCert = fs.readFileSync('/var/run/secrets/kubernetes.io/serviceaccount/ca.crt', 'utf8');
+} catch(ex) {}
 let env = {
   CALLBACK_URL: process.env.CALLBACK_URL || 'http://localhost:3000/callback',
   AAD_TENANT_ID: process.env.AAD_TENANT_ID,
@@ -32,6 +36,12 @@ router.get('/', authenticate, function(req, res, next) {
   res.render('index', {
     name: req.user.profile.displayName,
     email: req.user.profile.upn,
+    clusterName: env.CLUSTER_API_URL.replace('https://api.',''),
+    clusterUrl: env.CLUSTER_API_URL,
+    apiserverAppId: env.AAD_K8S_API_SERVER_APP_ID,
+    kubectlAppId: env.AAD_K8S_KUBECTL_APP_ID,
+    tenantId: env.AAD_TENANT_ID,
+    clusterCaCert: caCert
   });
 });
 
@@ -91,6 +101,7 @@ router.get('/user', authenticate, function(req, res, next) {
 
 router.get('/kubeconfig', authenticate, function(req, res, next) {
   console.log(JSON.stringify(req.user));
+  
   res.attachment('kubeconfig-'+env.CLUSTER_NAME);
   res.render('kubeconfig', {
     accessToken: req.user.accessToken,

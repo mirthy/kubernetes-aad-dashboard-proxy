@@ -13,17 +13,27 @@
     </div>
     <div class="row">
         <div class="col-sm">
-            <div class="card">
-                <div class="card-body">
-                    <a href="/kubeconfig" class="btn btn-primary">Download KubeConfig</a>
-                </div>
+        <h2>Setup kubectl for this cluster:</h2>
+<pre><code>
+cat &gt;  $cluster-ca.pem &lt;&lt; EOF
+{{&clusterCaCert}}
+EOF
+
+kubectl config set-cluster {{&clusterName}} \
+    --server={{&clusterUrl}} \
+    --certificate-authority=$cluster-ca.pem \
+    --embed-certs=true
+kubectl config set-credentials {{email}} \
+    --auth-provider=azure \
+    --auth-provider-arg=environment=AzurePublicCloud \
+    --auth-provider-arg=client-id={{&kubectlAppId}} \
+    --auth-provider-arg=tenant-id={{&tenantId}} \
+    --auth-provider-arg=apiserver-id={{&apiserverAppId}}
+
+kubectl config set-context {{&clusterName}} --cluster={{&clusterName}} --user={{email}} 
+kubectl config use-context {{&clusterName}}
+</code></pre>
             </div>
-        </div>
-            <div class="card">
-                <div class="card-body">
-                </div>
-            </div>
-        </div>
     </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
