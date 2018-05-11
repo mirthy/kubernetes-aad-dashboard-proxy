@@ -14,6 +14,16 @@
     <div class="row">
         <div class="col-sm">
         <h2>Setup kubectl for this cluster:</h2>
+        <ul class="nav nav-tabs" id="kubectlTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="bash-tab" data-toggle="tab" href="#bash" role="tab" aria-controls="bash" aria-selected="true">Bash</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="powershell-tab" data-toggle="tab" href="#powershell" role="tab" aria-controls="powershell" aria-selected="false">Powershell</a>
+        </li>
+        </ul>
+        <div class="tab-content" id="kubectlTabContent">
+            <div class="tab-pane fade show active" id="bash" role="tabpanel" aria-labelledby="bash-tab">
 <pre><code>
 cat &gt;  $cluster-ca.pem &lt;&lt; EOF
 {{&clusterCaCert}}
@@ -31,9 +41,31 @@ kubectl config set-credentials {{email}} \
     --auth-provider-arg=apiserver-id={{&apiserverAppId}}
 
 kubectl config set-context {{&clusterName}} --cluster={{&clusterName}} --user={{email}} 
-kubectl config use-context {{&clusterName}}
+kubectl config use-context {{&clusterName}}            
 </code></pre>
             </div>
+            <div class="tab-pane fade" id="powershell" role="tabpanel" aria-labelledby="powershell-tab">
+<pre><code>
+sc -path kube-ca.pem @'
+{{&clusterCaCert}}
+'@
+
+kubectl config set-cluster {{&clusterName}} `
+    --server={{&clusterUrl}} `
+    --certificate-authority=kube-ca.pem `
+    --embed-certs=true
+kubectl config set-credentials {{email}} `
+    --auth-provider=azure `
+    --auth-provider-arg=environment=AzurePublicCloud `
+    --auth-provider-arg=client-id={{&kubectlAppId}} `
+    --auth-provider-arg=tenant-id={{&tenantId}} `
+    --auth-provider-arg=apiserver-id={{&apiserverAppId}}
+
+kubectl config set-context {{&clusterName}} --cluster={{&clusterName}} --user={{email}} 
+kubectl config use-context {{&clusterName}}            
+</code></pre>            
+            </div>
+        </div>       
     </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
