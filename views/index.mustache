@@ -21,6 +21,9 @@
         <li class="nav-item">
             <a class="nav-link" id="powershell-tab" data-toggle="tab" href="#powershell" role="tab" aria-controls="powershell" aria-selected="false">Powershell</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="cleartokens-tab" data-toggle="tab" href="#cleartokens" role="tab" aria-controls="cleartokens" aria-selected="false">Clear Tokens</a>
+        </li>
         </ul>
         <div class="tab-content" id="kubectlTabContent">
             <div class="tab-pane fade show active" id="bash" role="tabpanel" aria-labelledby="bash-tab">
@@ -33,6 +36,9 @@ kubectl config set-cluster {{&clusterName}} \
     --server={{&clusterUrl}} \
     --certificate-authority=kube-ca.pem \
     --embed-certs=true
+
+kubectl config unset users.{{email}}
+
 kubectl config set-credentials {{email}} \
     --auth-provider=azure \
     --auth-provider-arg=environment=AzurePublicCloud \
@@ -55,6 +61,9 @@ kubectl config set-cluster {{&clusterName}} `
     --server={{&clusterUrl}} `
     --certificate-authority=kube-ca.pem `
     --embed-certs=true
+
+kubectl config unset users.{{email}}
+
 kubectl config set-credentials {{email}} `
     --auth-provider=azure `
     --auth-provider-arg=environment=AzurePublicCloud `
@@ -64,6 +73,17 @@ kubectl config set-credentials {{email}} `
 
 kubectl config set-context {{&clusterName}} --cluster={{&clusterName}} --user={{email}} 
 kubectl config use-context {{&clusterName}}            
+</code></pre>            
+            </div>
+            <div class="tab-pane fade" id="cleartokens" role="tabpanel" aria-labelledby="cleartokens-tab">
+<pre><code>
+kubectl config unset users.{{email}}
+kubectl config set-credentials {{email}} `
+    --auth-provider=azure `
+    --auth-provider-arg=environment=AzurePublicCloud `
+    --auth-provider-arg=client-id={{&kubectlAppId}} `
+    --auth-provider-arg=tenant-id={{&tenantId}} `
+    --auth-provider-arg=apiserver-id={{&apiserverAppId}}
 </code></pre>            
             </div>
         </div>       
