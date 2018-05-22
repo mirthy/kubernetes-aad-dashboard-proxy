@@ -7,6 +7,7 @@
     "@microsoft/microsoft-graph-client": "^1.0.0",
     "body-parser": "^1.13.3",
     "bunyan": "^1.8.4",
+    "bunyan-express-serializer": "^1.0.0",
     "bunyan-sumologic": "^1.0.1",
     "connect-ensure-login": "^0.1.1",
     "cookie-parser": "~1.4.3",

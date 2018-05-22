@@ -46,7 +46,7 @@ router.get('/', authenticate, function(req, res, next) {
 });
 
 router.get('/login', bouncer.block, function(req, res, next) {
-  log.info({user: req.user}, "Authentication Request");
+  log.info({user: req.user, req: req}, "Authentication Request");
   // res.render('login', { title: 'Authenticated Proxy', env: env });
   passport.authenticate('azuread-openidconnect',
     {
@@ -164,7 +164,7 @@ proxy.on('upgrade', function (req, socket, head) {
 // TODO: Add authorization for these verbs with Graph API
 router.get('/*', authenticate, function(req, res) {
   try {
-    log.info({user: req.user.sub, path: req.path, verb: "GET"}, "GET");
+    log.info({user: req.user.sub, path: req.path, verb: "GET", req: req}, "GET");
     return proxy.web(req, res, {target: env.PROXY_DESTINATION_AUTHORITY});
   } catch (exception) {
     res.redirect('/error');
