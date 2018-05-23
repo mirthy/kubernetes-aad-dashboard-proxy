@@ -2,7 +2,7 @@ let express = require('express');
 let passport = require('passport');
 let ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 let router = express.Router();
-let bouncer = require ("express-bouncer")();
+let RateLimit = require('express-rate-limit');
 const log = require('../libs/logger');
 let httpProxy = require('http-proxy');
 let proxy = httpProxy.createProxy({secure:false});
@@ -23,9 +23,15 @@ let env = {
   LOGIN_WARNING_MESSAGE: process.env.LOGIN_WARNING_MESSAGE || 'THIS IS AN ACTIVE WORKING SYSTEM. BE RESPONSIBLE.'
 };
 
+var loginLimiter = new RateLimit({
+  windowMs: 5*60*1000, // 5 minutes
+  max: 15,
+  headers: true
+});
+
 let authenticate = function (req, res, next) {
-  if (req.isAuthenticated()) {
-      bouncer.reset (req);
+  // Skip auth for static assets in the dashboard (aka the favicon...)
+  if (req.isAuthenticated() || req.url.indexOf('/dashboard/assets') >= 0) {
       return next()
   }
   req.session.returnTo = req.path;
@@ -45,10 +51,9 @@ router.get('/', authenticate, function(req, res, next) {
   });
 });
 
-router.get('/login', bouncer.block, function(req, res, next) {
+router.get('/login', loginLimiter, function(req, res, next) {
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  log.info({user: req.user, ip: ip}, "Authentication Request");
-  // res.render('login', { title: 'Authenticated Proxy', env: env });
+  log.info({ip: ip}, "Authentication Request");
   passport.authenticate('azuread-openidconnect',
     {
       response: res,                      // required

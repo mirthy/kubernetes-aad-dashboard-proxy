@@ -14,7 +14,7 @@
     "debug": "~3.1.0",
     "dotenv": "^5.0.0",
     "express": "~4.16.2",
-    "express-bouncer": "^0.2.0",
+    "express-rate-limit": "^2.11.0",
     "express-session": "^1.11.3",
     "express-unless": "^0.5.0",
     "helmet": "^3.11.0",
@@ -26,7 +26,6 @@
     "node-cache": "^4.1.0",
     "passport": "^0.4.0",
     "passport-azure-ad": "^3.0.10",
-    "redbird": "^0.7.0",
     "request": "^2.78.0"
   },
   "devDependencies": {},

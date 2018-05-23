@@ -1,4 +1,4 @@
-FROM node:9-alpine
+FROM node:10-alpine
 
 RUN \
     mkdir /kubernetes-dashboard-proxy/

@@ -33,7 +33,7 @@ let strategy = new OIDCStrategy({
     issuer: null,
     passReqToCallback: false,
     scope: ['profile','group'],
-    loggingLevel: 'info',
+    loggingLevel: 'warn',
     nonceLifetime: null,
     nonceMaxAmount: 5,
     loggingNoPII: true // Don't log tokens
@@ -94,9 +94,9 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
   done(null, user);
 });
-const SECRET = 'myClientSecret123';
+const SECRET = 'Bc7V#3BoPupeFkt$%x4gJuyZ';
 var app = express();
-
+app.enable('trust proxy');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.engine('mustache', mustacheExpress());
