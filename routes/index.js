@@ -42,7 +42,7 @@ router.get('/', authenticate, function(req, res, next) {
   res.render('index', {
     name: req.user.profile.displayName,
     email: req.user.profile.upn,
-    clusterName: env.CLUSTER_API_URL.replace('https://api.',''),
+    clusterName: env.CLUSTER_NAME,
     clusterUrl: env.CLUSTER_API_URL,
     apiserverAppId: env.AAD_K8S_API_SERVER_APP_ID,
     kubectlAppId: env.AAD_K8S_KUBECTL_APP_ID,
