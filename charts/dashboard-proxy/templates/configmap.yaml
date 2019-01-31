@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  callbackUrl: "https://{{ .Values.service.serviceName }}.{{ .Values.service.clusterDnsName }}/callback"
+  clusterApiUrl: "https://api.{{ .Values.service.clusterDnsName }}"
+  destinationAuthority: https://kubernetes-dashboard.kube-system.svc.cluster.local
+  clusterName: {{ .Values.service.clusterDnsName }}
+kind: ConfigMap
+metadata:
+  name: dashboard-proxy-config
+  selfLink: /api/v1/namespaces/cluster-tools/configmaps/dashboard-proxy-config
