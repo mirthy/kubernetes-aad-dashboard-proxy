@@ -1,0 +1,79 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    app: {{ .Values.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret}}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: CALLBACK_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: dashboard-proxy-config
+                  key: callbackUrl
+            - name: AAD_K8S_KUBECTL_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dashboard-proxy-aad
+                  key: kubectlAppId
+            - name: AAD_TENANT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dashboard-proxy-aad
+                  key: tenantId
+            - name: AAD_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dashboard-proxy-aad
+                  key: clientId
+            - name: AAD_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: dashboard-proxy-aad
+                  key: clientSecret
+            - name: AAD_K8S_API_SERVER_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: dashboard-proxy-aad
+                  key: apiServiceAppId
+            - name: AAD_RESPONSE_TYPE
+              valueFrom:
+                secretKeyRef:
+                  name: dashboard-proxy-aad
+                  key: responseType
+            - name: PROXY_DESTINATION_AUTHORITY
+              valueFrom:
+                configMapKeyRef:
+                  name: dashboard-proxy-config
+                  key: destinationAuthority
+            - name: CLUSTER_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: dashboard-proxy-config
+                  key: clusterApiUrl
+            - name: CLUSTER_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: dashboard-proxy-config
+                  key: clusterName
+            - name: SUMO_COLLECTOR_ID
+              value: "{{ .Values.environment.sumoCollectorId }}"
+            - name: LOGIN_WARNING_MESSAGE
+              value: "THIS IS A TEST DEPLOY."
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

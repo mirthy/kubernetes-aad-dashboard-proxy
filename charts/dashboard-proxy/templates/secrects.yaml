@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  apiServiceAppId: {{ .Values.secrets.apiServiceAppId }}
+  clientId: {{ .Values.secrets.clientId }}
+  clientSecret: {{ .Values.secrets.clientSecret }}
+  kubectlAppId: {{ .Values.secrets.kubectlAppId }}
+  responseType: Y29kZSBpZF90b2tlbg==
+  tenantId: {{ .Values.secrets.tenantId }}
+kind: Secret
+metadata:
+  name: dashboard-proxy-aad
+type: Opaque

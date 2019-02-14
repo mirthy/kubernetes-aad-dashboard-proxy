@@ -1,0 +1,44 @@
+name: kube-dashboard-proxy
+replicaCount: 1
+image:
+  repository: <path_to_your_image_repo>
+  tag: latest
+  pullPolicy: IfNotPresent
+  pullSecret: <your_pull_secret>
+service:
+  # Any annotations for service you need to add (aws certificates, dns binding etc.)
+  annotations:
+    # Example for external dns
+    external-dns.alpha.kubernetes.io/hostname: <full_hostname_of_this_app>
+  # Name of the service
+  name: kube-dashboard-proxy-svc
+  # Type of service you would like to use
+  type: LoadBalancer
+  # Https port to use
+  sslExternalPort: 443
+  # Http port to use
+  externalPort: 80
+  # Port which will be exposed by pods
+  internalPort: 3000
+  # Last level of dns domain to use
+  serviceDnsName: "kube-dashboard"
+  # Dns name of your cluster
+  clusterDnsName: "your.cool.cluster.example.com"
+# All values in secrects must be base64 encoded!
+secrets:
+  # App id in AD of the cluster's API server
+  apiServiceAppId: <your_service_id>
+  # App id of this app in AD. The app should have configured callback
+  # to "https://{serviceDnsName}.{clusterDnsName}/callback"
+  clientId: <your_client_id>
+  # Secret for the clientId
+  clientSecret: <your_client_secret_from_ad>
+  # App id of native app which is used for authentication and will
+  # do the Oauth2 dance.
+  kubectlAppId: <your_kubectl_app_id>
+  # Tenant Id (aka Directory id) of your AD
+  tenantId: <your_tenant_id>
+environment:
+  # Put some nonsense string here if you do not use Sumo
+  sumoCollectorId: <your sumologic ID >
+resources: {}
